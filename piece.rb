@@ -1,5 +1,5 @@
 class Pieces
-  attr_accessor :position, :color
+  attr_accessor :position, :color, :board
 
   def initialize(position, color, board, rank)
     @position = position
@@ -9,9 +9,9 @@ class Pieces
   end
 
   def move(pos)
-    @board[@position]=nil
-    @board[pos]=self
-    @position=pos
+    @board[@position.first][@position.last]=nil
+    @board[pos.first][pos.last] = self
+    @position = pos
 
 
   end
