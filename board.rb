@@ -51,7 +51,7 @@ class Board
         if cell.nil?
           drawn << " _ "
         else
-          drawn << " X "
+          drawn << cell.render
         end
       end
       drawn << c.to_s

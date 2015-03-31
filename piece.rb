@@ -1,4 +1,11 @@
 class Pieces
+  RENDER_HASH = {:pawn=>" p ",
+                :knight=>" n ",
+                :king=>" K ",
+                :queen=>" Q ",
+                :rook=>" r ",
+                :bishop=>" b "}
+
   attr_accessor :position, :color, :board, :rank
 
   def initialize(position, color, board, rank)
@@ -12,7 +19,6 @@ class Pieces
     @board[@position.first][@position.last]=nil
     @board[pos.first][pos.last] = self
     @position = pos
-
 
   end
 
@@ -36,6 +42,9 @@ class Pieces
     pos.select{ |(row, column)| row.between?(0,7) && column.between?(0,7)}
   end
 
+  def render
+    RENDER_HASH[self.rank]
+  end
 
 
 end
@@ -43,46 +52,25 @@ end
 
 class Sliding_Pieces < Pieces
 
-  DIAGNAL_MOTION=[[1,1],[-1,1],[-1,-1],[1,-1]]
-  STRAIGHT_MOTION = [[-1,0],[1,0],[0,1],[0,-1]]
+    DIAGONAL_MOTION=[[1,1],[-1,1],[-1,-1],[1,-1]]
+    STRAIGHT_MOTION = [[-1,0],[1,0],[0,1],[0,-1]]
 
+    DIC = { :rook => STRAIGHT_MOTION, :bishop => DIAGONAL_MOTION, :queen => DIAGONAL_MOTION+STRAIGHT_MOTION}
 
-  def rook_moves
+  def sliding_piece_moves
     pos = []
-    STRAIGHT_MOTION.each do |move|
+    DIC[self.rank].each do |(row,col)|
       8.times do |idx|
         next if idx == 0
-
-        pos << [position.first + move.first*idx , position.last + move.last*idx]
-        last_pos = pos.last
-        if !@board[last_pos.first][last_pos.last].nil?
-          break
-        end
+        pos << [position.first + row*idx , position.last + col*idx]
+        last_obj = @board[pos.last.first][pos.last.last]
+        break unless last_obj.nil?
       end
     end
 
     all_moves = remove_invalid(pos)
     valid_moves(all_moves)
   end
-
-  def bishop_moves
-    pos = []
-    DIAGNAL_MOTION.each do |move|
-      8.times do |idx|
-        next if idx == 0
-
-        pos << [position.first + move.first*idx , position.last + move.last*idx]
-        last_pos = pos.last
-        if !@board[last_pos.first][last_pos.last].nil?
-          break
-        end
-      end
-    end
-
-    all_moves = remove_invalid(pos)
-    valid_moves(all_moves)
-  end
-
 
 end
 
@@ -90,6 +78,8 @@ class Stepping_Pieces < Pieces
 
     KNIGHT_MOTION= [ [1,2],[2,1],[1,-2],[-2,1],[-1,2],[2,-1],[-1,-2],[-2,-1]]
     KING_MOTION=[[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,-1],[-1,0],[-1,1]]
+
+    DIC= {:king=>KING_MOTION,:knight=>KNIGHT_MOTION}
 
   def move(pos)
     if self.rank == :knight
@@ -100,26 +90,15 @@ class Stepping_Pieces < Pieces
     super(pos)
   end
 
-  def knight_moves
+  def stepping_piece_moves
       pos=[]
-      KNIGHT_MOTION.each do |move|
+      DIC[self.rank].each do |move|
         pos << [position.first + move.first, position.last + move.last]
       end
 
       all_moves = remove_invalid(pos)
       valid_moves(all_moves)
   end
-
-  def king_moves
-      pos=[]
-      KING_MOTION.each do |move|
-        pos << [position.first + move.first, position.last + move.last]
-      end
-
-      all_moves = remove_invalid(pos)
-      valid_moves(all_moves)
-  end
-
 
 end
 
@@ -152,12 +131,8 @@ class Pawns < Pieces
       pos << [position.first + move.first, position.last + move.last]
     end
 
-    p pos
     valid_moves(pos)
 
-    # all_moves = remove_invalid(pos)
-    #
-    # valid_moves(all_moves)
   end
 
   def valid_moves(all_moves)
