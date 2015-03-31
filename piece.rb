@@ -1,5 +1,5 @@
 class Pieces
-  attr_accessor :position, :color, :board
+  attr_accessor :position, :color, :board, :rank
 
   def initialize(position, color, board, rank)
     @position = position
@@ -64,6 +64,15 @@ class Stepping_Pieces < Pieces
     KNIGHT_MOTION= [ [1,2],[2,1],[1,-2],[-2,1],[-1,2],[2,-1],[-1,-2],[-2,-1]]
     KING_MOTION=[[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,-1],[-1,0],[-1,1]]
 
+  def move(pos)
+    if self.rank == :knight
+      return "ERROR" if !knight_moves.include?(pos)
+    else
+      return "ERROR" if !king_moves.include?(pos)
+    end
+    super(pos)
+  end
+
   def knight_moves
       pos=[]
       KNIGHT_MOTION.each do |move|
@@ -87,9 +96,14 @@ class Stepping_Pieces < Pieces
   def valid_moves(all_moves)
     valid_moves = []
     all_moves.each do |(row, col)|
+      if @board[row][col].nil?
+        valid_moves << [row,col]
+        next
+      end
       unless @board[row][col].color == @color
         valid_moves << [row,col]
       end
+    end
 
     valid_moves
   end
@@ -128,8 +142,5 @@ class Pawns < Pieces
 
     remove_invalid(pos)
   end
-
-
-
 
 end
