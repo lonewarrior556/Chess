@@ -16,8 +16,19 @@ class Pieces
 
   end
 
-  def valid_moves
-    "generic piece move"
+  def valid_moves(all_moves)
+    valid_moves = []
+    all_moves.each do |(row, col)|
+      if @board[row][col].nil?
+        valid_moves << [row,col]
+        next
+      end
+      unless @board[row][col].color == @color
+        valid_moves << [row,col]
+      end
+    end
+
+    valid_moves
   end
 
   def remove_invalid(pos)
@@ -33,29 +44,45 @@ end
 class Sliding_Pieces < Pieces
 
   DIAGNAL_MOTION=[[1,1],[-1,1],[-1,-1],[1,-1]]
+  STRAIGHT_MOTION = [[-1,0],[1,0],[0,1],[0,-1]]
 
 
   def rook_moves
-    pos_moves = []
+    pos = []
+    STRAIGHT_MOTION.each do |move|
+      8.times do |idx|
+        next if idx == 0
 
-    8.times do |idx|
-      pos_moves << [position.first, idx]
-      pos_moves << [idx, position.last]
+        pos << [position.first + move.first*idx , position.last + move.last*idx]
+        last_pos = pos.last
+        if !@board[last_pos.first][last_pos.last].nil?
+          break
+        end
+      end
     end
 
-    remove_invalid(pos)
+    all_moves = remove_invalid(pos)
+    valid_moves(all_moves)
   end
 
   def bishop_moves
     pos = []
-    8.times do |idx|
-      DIAGNAL_MOTION.each do |move|
+    DIAGNAL_MOTION.each do |move|
+      8.times do |idx|
+        next if idx == 0
+
         pos << [position.first + move.first*idx , position.last + move.last*idx]
+        last_pos = pos.last
+        if !@board[last_pos.first][last_pos.last].nil?
+          break
+        end
       end
     end
 
-    remove_invalid(pos)
+    all_moves = remove_invalid(pos)
+    valid_moves(all_moves)
   end
+
 
 end
 
@@ -91,21 +118,6 @@ class Stepping_Pieces < Pieces
 
       all_moves = remove_invalid(pos)
       valid_moves(all_moves)
-  end
-
-  def valid_moves(all_moves)
-    valid_moves = []
-    all_moves.each do |(row, col)|
-      if @board[row][col].nil?
-        valid_moves << [row,col]
-        next
-      end
-      unless @board[row][col].color == @color
-        valid_moves << [row,col]
-      end
-    end
-
-    valid_moves
   end
 
 
