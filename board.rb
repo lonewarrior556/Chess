@@ -2,8 +2,6 @@ require './piece'
 
 class Board
 
-
-
   attr_accessor :board, :dictionary
 
   ORDER= [:rook, nil, :bishop, :queen, nil, :bishop, nil, :rook]
@@ -33,9 +31,9 @@ class Board
     @dictionary = Hash.new
     columns = %w(a b c d e f g h)
 
-    @board.each_with_index do |row, row_idx|
-      row.each_with_index do |col, col_idx|
-        dictionary[columns[col_idx] + (8 - row_idx).to_s] = [row_idx,col_idx]
+    8.times do |row_idx|
+      8.times do |col_idx|
+        dictionary[columns[col_idx] + (8 - row_idx).to_s] = [row_idx, col_idx]
       end
     end
 
@@ -43,7 +41,7 @@ class Board
   end
 
   def display
-    c=8
+    count = 8
     puts " A  B  C  D  E  F  G  H  "
     @board.each do |row|
       drawn=''
@@ -54,10 +52,11 @@ class Board
           drawn << cell.render
         end
       end
-      drawn << c.to_s
-      c=c-1
+      drawn << count.to_s
+      count -= 1
       puts drawn
     end
+
     nil
   end
 
