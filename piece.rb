@@ -11,11 +11,15 @@ class Pieces
   def moves
 
 
-
   end
 
   def valid_moves
     "generic piece move"
+  end
+
+  def remove_invalid(pos)
+    pos = pos - [position]
+    pos.select{ |(row, column)| row.between?(0,7) && column.between?(0,7)}
   end
 
 
@@ -40,8 +44,7 @@ class Sliding_Pieces < Pieces
       pos_moves << [position.first, idx]
       pos_moves << [idx, position.last]
     end
-
-    pos_moves - [position]
+    remove_invalid(pos)
   end
 
   def bishop_moves
@@ -51,20 +54,22 @@ class Sliding_Pieces < Pieces
         pos << [position.first + move.first*idx , position.last + move.last*idx]
       end
     end
-    pos = pos - [position]
-    pos.select{ |(row, column)| row.between?(0,7) && column.between?(0,7)}
-
+    remove_invalid(pos)
   end
-
-
 
 end
 
-
 class Stepping_Pieces < Pieces
 
+    KNIGHT_MOTION= [ [1,2],[2,1],[1,-2],[-2,1],[-1,2],[2,-1],[-1,-2],[-2,-1]]
 
 
+def knight_moves
+    pos=[]
+    KNIGHT_MOTION.each do |move|
+      pos << [position.first + move.first, position.last + move.last]
+    end
+    remove_invalid(pos)
 end
 
 class Pawns < Pieces
