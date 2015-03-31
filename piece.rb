@@ -37,15 +37,6 @@ class Sliding_Pieces < Pieces
 
   def rook_moves
     pos_moves = []
-    #
-    # (1...8).to_a.each do |idx|
-    #   new_pos = [postition.first, position.last + idx]
-    #   if board[new_pos].nil?
-    #     pos_moves << new_pos
-    #   elsif color != board[new_pos].color
-    #     break
-    #   end
-    # end
 
     8.times do |idx|
       pos_moves << [position.first, idx]
@@ -79,7 +70,8 @@ class Stepping_Pieces < Pieces
         pos << [position.first + move.first, position.last + move.last]
       end
 
-      remove_invalid(pos)
+      all_moves = remove_invalid(pos)
+      valid_moves(all_moves)
   end
 
   def king_moves
@@ -88,8 +80,20 @@ class Stepping_Pieces < Pieces
         pos << [position.first + move.first, position.last + move.last]
       end
 
-      remove_invalid(pos)
+      all_moves = remove_invalid(pos)
+      valid_moves(all_moves)
   end
+
+  def valid_moves(all_moves)
+    valid_moves = []
+    all_moves.each do |(row, col)|
+      unless @board[row][col].color == @color
+        valid_moves << [row,col]
+      end
+
+    valid_moves
+  end
+
 
 end
 
