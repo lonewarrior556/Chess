@@ -11,6 +11,11 @@ class Board
     @board = Array.new(8) {Array.new(8)}
     build_board
     create_board_hash
+    @turn = :white
+  end
+
+  def toggle_turn
+    @turn == :white ? @turn = :black : @turn = :white
   end
 
   def build_board
@@ -49,7 +54,7 @@ class Board
         if cell.nil?
           drawn << " _ "
         else
-          drawn << cell.render
+          drawn << " " + cell.render + " "
         end
       end
       drawn << count.to_s
@@ -59,6 +64,11 @@ class Board
 
     nil
   end
+
+  def check?
+    possbile_moves = []
+  end
+
 
 
 

@@ -1,10 +1,17 @@
 class Pieces
-  RENDER_HASH = {:pawn=>" p ",
-                :knight=>" n ",
-                :king=>" K ",
-                :queen=>" Q ",
-                :rook=>" r ",
-                :bishop=>" b "}
+  RENDER_HASH_BLACK = {:pawn=>"\u265f",
+                      :knight=>"\u265e",
+                      :king=>"\u265a",
+                      :queen=>"\u265b",
+                      :rook=>"\u265c",
+                      :bishop=>"\u265d"}
+
+  RENDER_HASH_WHITE = {:pawn=>"\u2659",
+                      :knight=>"\u2658",
+                      :king=>"\u2654",
+                      :queen=>"\u2655",
+                      :rook=>"\u2656",
+                      :bishop=>"\u2657"}
 
   attr_accessor :position, :color, :board, :rank
 
@@ -47,7 +54,8 @@ class Pieces
   end
 
   def render
-    RENDER_HASH[self.rank]
+    d={:white=>RENDER_HASH_WHITE,:black=>RENDER_HASH_BLACK}
+    d[color][self.rank]
   end
 
 end
