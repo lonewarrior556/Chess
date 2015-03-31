@@ -135,9 +135,9 @@ class Pawns < Pieces
 
   def set_moves
     if color == :white
-      @pawn_motion = [[0,1],[1,1],[-1,1],[0,2]]
+      @pawn_motion = [[1,0],[1,1],[1,-1],[2,0]]
     else
-      @pawn_motion = [[0,-1],[1,-1],[-1,-1],[0,-2]]
+      @pawn_motion = [[-1,0],[-1,1],[-1,-1],[-2,0]]
     end
 
   end
@@ -148,11 +148,41 @@ class Pawns < Pieces
       @pawn_motion = pawn_motion.take(3)
     end
 
-    pawn_motion.each do |move|
+    @pawn_motion.each do |move|
       pos << [position.first + move.first, position.last + move.last]
     end
 
-    remove_invalid(pos)
+    p pos
+    valid_moves(pos)
+
+    # all_moves = remove_invalid(pos)
+    #
+    # valid_moves(all_moves)
   end
+
+  def valid_moves(all_moves)
+    valid_moves = []
+    forward = []
+    sides = all_moves[1..2]
+    forward << all_moves[0] << all_moves[3].to_a
+
+    sides.each do |(row,col)|
+      next if @board[row][col].nil?
+      if self.color != @board[row][col].color
+        valid_move << side
+      end
+    end
+
+    forward.each do |front|
+      if @board[front.first][front.last].nil?
+        valid_moves << front
+      else
+        break
+      end
+    end
+
+    valid_moves
+  end
+
 
 end
