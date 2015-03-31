@@ -12,6 +12,7 @@ class Board
   def initialize
     @board = Array.new(8) {Array.new(8)}
     build_board
+    create_board_hash
   end
 
   def build_board
@@ -41,6 +42,24 @@ class Board
     nil
   end
 
+  def display
+    c=8
+    puts " A  B  C  D  E  F  G  H  "
+    @board.each do |row|
+      drawn=''
+      row.each do | cell |
+        if cell.nil?
+          drawn << " _ "
+        else
+          drawn << " X "
+        end
+      end
+      drawn << c.to_s
+      c=c-1
+      puts drawn
+    end
+    nil
+  end
 
 
 

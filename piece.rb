@@ -8,7 +8,10 @@ class Pieces
     @rank = rank
   end
 
-  def moves
+  def move(pos)
+    @board[@position]=nil
+    @board[pos]=self
+    @position=pos
 
 
   end
