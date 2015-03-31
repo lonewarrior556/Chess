@@ -1,11 +1,11 @@
 class Pieces
   attr_accessor :position, :color
 
-  def initialize (position, color, board)
+  def initialize(position, color, board, rank)
     @position = position
     @color = color
     @board = board
-
+    @rank = rank
   end
 
   def moves
@@ -32,13 +32,17 @@ class Sliding_Pieces < Pieces
   DIAGNAL_MOTION=[[1,1],[-1,1],[-1,-1],[1,-1]]
 
 
-  def initialize(position, color, board, rank)
-    super(position, color, board)
-    @rank = rank
-  end
-
   def rook_moves
     pos_moves = []
+    #
+    # (1...8).to_a.each do |idx|
+    #   new_pos = [postition.first, position.last + idx]
+    #   if board[new_pos].nil?
+    #     pos_moves << new_pos
+    #   elsif color != board[new_pos].color
+    #     break
+    #   end
+    # end
 
     8.times do |idx|
       pos_moves << [position.first, idx]
@@ -88,8 +92,8 @@ end
 
 class Pawns < Pieces
 
-  def initialize(position, color, board)
-    super(position, color, board)
+  def initialize(position, color, board, rank)
+    super(position, color, board, rank)
     @moved = false
     set_moves
   end
