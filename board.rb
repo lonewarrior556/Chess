@@ -1,4 +1,5 @@
 require './pieces'
+require 'yaml'
 
 class Board
 
@@ -21,13 +22,13 @@ class Board
   def build_board
 
     8.times do |col|
-      @board[1][col] = Pawns.new([1,col],:white,          @board, :pawn)
-      @board[6][col] = Pawns.new([6,col],:black,          @board, :pawn)
-      @board[0][col] = Sliding_Pieces.new([0,col],:white, @board,ORDER[col])
-      @board[7][col] = Sliding_Pieces.new([7,col],:black, @board,ORDER[col])
+      @board[1][col] = Pawns.new([1,col],:black,          @board, :pawn)
+      @board[6][col] = Pawns.new([6,col],:white,          @board, :pawn)
+      @board[0][col] = Sliding_Pieces.new([0,col],:black, @board,ORDER[col])
+      @board[7][col] = Sliding_Pieces.new([7,col],:white, @board,ORDER[col])
       next if K_UNITS[col].nil?
-      @board[0][col] = Stepping_Pieces.new([0,col],:white, @board,K_UNITS[col])
-      @board[7][col] = Stepping_Pieces.new([7,col],:black,@board,K_UNITS[col])
+      @board[0][col] = Stepping_Pieces.new([0,col],:black, @board,K_UNITS[col])
+      @board[7][col] = Stepping_Pieces.new([7,col],:white,@board,K_UNITS[col])
     end
 
   end
@@ -66,25 +67,26 @@ class Board
   end
 
   def board_dup
-    new_object = Board.new
-    new_board = []
-
-    @board.each do |row|
-      new_row = []
-      row.each do |col|
-        if col.nil?
-          new_row << nil
-        else
-          new_row << col.dup
-          col.board = new_object
-        end
-      end
-      new_board << new_row
-    end
-
-    new_object.board = new_board
-    new_object
+    YAML.load(self.to_yaml)
   end
+
+  def move(start_pos, end_pos)
+    #reject if @turn != color
+    piece = @board[start_pos.first][start_pos.last]
+    return "No Piece" if piece.nil?
+    return "Not 'yo Piece" if piece.color != @turn
+    return "Wrong Move" unless piece.moves.include?(end_pos)
+
+    test_board = self.board_dup
+
+    test_board.board[start_pos.first][start_pos.last].move(end_pos)
+    return "Cannot move self to check" if test_board.check?(@turn)
+
+    piece.move(end_pos)
+    toggle_turn
+  end
+
+
 
 
   def check?(color)

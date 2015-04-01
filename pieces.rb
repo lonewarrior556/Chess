@@ -126,11 +126,16 @@ class Pawns < Pieces
   end
 
   def set_moves
-    if color == :white
+    if color == :black
       @pawn_motion = [[1,0], [1,1], [1,-1], [2,0]]
     else
       @pawn_motion = [[-1,0], [-1,1], [-1,-1], [-2,0]]
     end
+  end
+
+  def move(pos)
+    super(pos)
+    @moved = true
   end
 
   def moves
