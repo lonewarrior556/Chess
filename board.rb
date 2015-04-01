@@ -72,15 +72,10 @@ class Board
     @board.each do |row|
       row.each do |cell|
         next if cell.nil?
-        p "last run"
-        p cell.position
         if cell.color == self.turn && cell.rank == :king
-          p cell.position
-          p cell.color
-          p cell.rank
           king_pos = cell.position
         elsif cell.color != self.turn
-          possible_moves << cell.moves
+          possible_moves.concat(cell.moves)
         end
       end
     end

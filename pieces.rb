@@ -75,7 +75,6 @@ class Sliding_Pieces < Pieces
     DIC[self.rank].each do |(row,col)|
       (1...8).to_a.each do |idx|
         pos << [position.first + row*idx , position.last + col*idx]
-        debugger
         break if remove_invalid([pos[-1]]) == []
 
         last_obj = @board[pos.last.first][pos.last.last]
