@@ -11,7 +11,7 @@ class Board
   def initialize
     @board = Array.new(8) {Array.new(8)}
     build_board
-    create_board_hash
+    # create_board_hash
     @turn = :white
     @move_tracker = { :white => Array.new(8){"        "}, :black => Array.new(8){"        "} }
   end
@@ -34,18 +34,18 @@ class Board
 
   end
 
-  def create_board_hash
-    @dictionary = Hash.new
-    columns = %w(a b c d e f g h)
-
-    8.times do |row_idx|
-      8.times do |col_idx|
-        dictionary[columns[col_idx] + (8 - row_idx).to_s] = [row_idx, col_idx]
-      end
-    end
-
-    nil
-  end
+  # def create_board_hash
+  #   @dictionary = Hash.new
+  #   columns = %w(a b c d e f g h)
+  #
+  #   8.times do |row_idx|
+  #     8.times do |col_idx|
+  #       dictionary[columns[col_idx] + (8 - row_idx).to_s] = [row_idx, col_idx]
+  #     end
+  #   end
+  #
+  #   nil
+  # end
 
 
   def display
@@ -61,7 +61,8 @@ class Board
         end
       end
       drawn << count.to_s + "          "
-      drawn <<  @move_tracker[:black][8 - count].to_s[1..-2].to_s.gsub("\"","")  +"   |   "
+      drawn <<  @move_tracker[:black][8 - count].to_s[1..-2].to_s.gsub("\"","")
+      drawn << "   |   "
       drawn <<  @move_tracker[:white][8 - count].to_s[1..-2].to_s.gsub("\"","")
       count -= 1
       puts drawn
@@ -72,10 +73,16 @@ class Board
 
   def board_dup
     YAML.load(self.to_yaml)
+
+
+
+
+
+
+
   end
 
   def move(start_pos, end_pos)
-    #reject if @turn != color
     piece = @board[start_pos.first][start_pos.last]
     return "No Piece" if piece.nil?
     return "Not 'yo Piece" if piece.color != @turn
@@ -89,14 +96,12 @@ class Board
 
     piece.move(end_pos)
     toggle_turn
+
     true
   end
 
-
-
-
   def game_over?(color)
-    poss_move_set = check?(color,true)
+    poss_move_set = check?(color, true)
 
     poss_move_set.each do |(from , to)|
       new_board = self.board_dup
@@ -108,29 +113,36 @@ class Board
     true
   end
 
-  def play
-    system "clear"
-    display
-
-    until game_over?(turn)
-      puts "#{@turn} Please move (start,finish)"
-      user_choice = gets.chomp.split(",")
-      choice = [@dictionary[user_choice.first], @dictionary[user_choice.last]]
-      moved_message = move(*choice)
-
-      if moved_message == true
-        @move_tracker[@turn].unshift("#{user_choice}")
-      else
-        puts moved_message
-      end
-      system "clear"
-      display
-    end
-    toggle_turn
-
-    return "#{@turn} WINS!" if check?(turn)
-    "Draw"
-  end
+  # def play
+  #   system "clear"
+  #   display
+  #
+  #   until game_over?(turn)
+  #     puts "#{@turn} Please move (start,finish)"
+  #     user_choice = gets.chomp.split(",")
+  #     choice = [@dictionary[user_choice.first], @dictionary[user_choice.last]]
+  #     moved_message = move(*choice)
+  #     system "clear"
+  #
+  #     if moved_message == true
+  #       @move_tracker[@turn].unshift("#{user_choice}")
+  #       display
+  #     else
+  #       display
+  #       puts moved_message
+  #     end
+  #
+  #
+  #     @turn == :white ? previous_turn = :black : previous_turn = :white
+  #     puts "CHECK!" if check?(previous_turn)
+  #   end
+  #
+  #
+  #   toggle_turn
+  #
+  #   return "#{@turn} WINS!" if check?(turn)
+  #   "Draw"
+  # end
 
 
 
@@ -160,7 +172,7 @@ class Board
 
 end
 
-if __FILE__ == $PROGRAM_NAME
-  b = Board.new; nil
-  b.play
-end
+# if __FILE__ == $PROGRAM_NAME
+#   b = Board.new; nil
+#   b.play
+# end
