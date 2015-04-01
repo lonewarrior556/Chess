@@ -80,17 +80,16 @@ class Board
     test_board = self.board_dup
 
     test_board.board[start_pos.first][start_pos.last].move(end_pos)
-    return "Cannot move self to check" if test_board.check?(@turn)
+    test_board.toggle_turn
+    return "Cannot move self to check" if test_board.check?(test_board.turn)
 
     piece.move(end_pos)
     toggle_turn
     true
   end
-  
 
-  def checkmate?(color)
-    game_over?(color) && check?(color)
-  end
+
+
 
   def game_over?(color)
     poss_move_set = check?(color,true)
@@ -105,6 +104,22 @@ class Board
     true
   end
 
+  def play
+    display
+
+
+    until game_over?(turn)
+      puts "#{@turn} Please move (start,finish)"
+      choice = gets.chomp.split(",")
+      choice = [@dictionary[choice.first], @dictionary[choice.last]]
+      move(*choice)
+      display
+    end
+    toggle_turn
+    return "#{@turn} WINS!" if check?(turn)
+    "Draw"
+  end
+
 
 
   def check?(color, more = false)
@@ -115,9 +130,9 @@ class Board
     @board.each do |row|
       row.each do |cell|
         next if cell.nil?
-        if cell.color == color && cell.rank == :king
+        if cell.color != color && cell.rank == :king
           king_pos = cell.position
-        elsif cell.color != color
+        elsif cell.color == color
           possible_moves.concat(cell.moves)
 
           cell.moves.each do |move|
@@ -130,8 +145,5 @@ class Board
     return poss_move_set if more
     possible_moves.include?(king_pos)
   end
-
-
-
 
 end
