@@ -140,21 +140,23 @@ class Pawns < Pieces
       pos << [position.first + row, position.last + col]
     end
 
-    valid_moves(pos)
-  end
+    all_moves = remove_invalid(pos)
+    valid_moves(all_moves)
+end
 
   def valid_moves(all_moves)
     valid_moves = []
-    forward = []
-    sides = all_moves[1..2]
-    forward << all_moves[0] << all_moves[3].to_a
-
-    sides.each do |(row,col)|
-      next if @board[row][col].nil?
-      valid_move << side if self.color != @board[row][col].color
+    f_moves=[]
+    all_moves.each do |(row,col)|
+      if col == self.position.last
+        f_moves << [row,col]
+      else
+        if !@board[row][col].nil? && @board[row][col].color != self.color
+          valid_moves << [row,col]
+        end
+      end
     end
-
-    forward.each do |(row, col)|
+    f_moves.each do |(row,col)|
       if @board[row][col].nil?
         valid_moves << [row,col]
       else
@@ -164,6 +166,5 @@ class Pawns < Pieces
 
     valid_moves
   end
-
 
 end
