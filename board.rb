@@ -84,14 +84,33 @@ class Board
 
     piece.move(end_pos)
     toggle_turn
+    true
+  end
+  
+
+  def checkmate?(color)
+    game_over?(color) && check?(color)
+  end
+
+  def game_over?(color)
+    poss_move_set = check?(color,true)
+
+    poss_move_set.each do |(from , to)|
+      new_board = self.board_dup
+      if new_board.move(from, to) == true
+        return false
+      end
+    end
+
+    true
   end
 
 
 
-
-  def check?(color)
+  def check?(color, more = false)
     possible_moves = []
     king_pos = []
+    poss_move_set = []
 
     @board.each do |row|
       row.each do |cell|
@@ -100,10 +119,15 @@ class Board
           king_pos = cell.position
         elsif cell.color != color
           possible_moves.concat(cell.moves)
+
+          cell.moves.each do |move|
+            poss_move_set << [cell.position,move]
+          end
         end
       end
     end
 
+    return poss_move_set if more
     possible_moves.include?(king_pos)
   end
 
