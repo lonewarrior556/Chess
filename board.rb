@@ -3,7 +3,7 @@ require 'yaml'
 
 class Board
 
-  attr_accessor :board, :dictionary, :turn
+  attr_accessor :board, :dictionary, :turn, :move_tracker
 
   ORDER= [:rook, nil, :bishop, :queen, nil, :bishop, nil, :rook]
   K_UNITS = [nil, :knight, nil, nil, :king, nil,:knight, nil]
@@ -13,6 +13,7 @@ class Board
     build_board
     create_board_hash
     @turn = :white
+    @move_tracker = { :white => Array.new(8){"        "}, :black => Array.new(8){"        "} }
   end
 
   def toggle_turn
@@ -46,9 +47,10 @@ class Board
     nil
   end
 
+
   def display
     count = 8
-    puts " A  B  C  D  E  F  G  H  "
+    puts " A  B  C  D  E  F  G  H              WHITE  :  BLACK"
     @board.each do |row|
       drawn=''
       row.each do | cell |
@@ -58,7 +60,9 @@ class Board
           drawn << " " + cell.render + " "
         end
       end
-      drawn << count.to_s
+      drawn << count.to_s + "          "
+      drawn <<  @move_tracker[:black][8 - count].to_s[1..-2].to_s.gsub("\"","")  +"   |   "
+      drawn <<  @move_tracker[:white][8 - count].to_s[1..-2].to_s.gsub("\"","")
       count -= 1
       puts drawn
     end
@@ -105,17 +109,25 @@ class Board
   end
 
   def play
+    system "clear"
     display
-
 
     until game_over?(turn)
       puts "#{@turn} Please move (start,finish)"
-      choice = gets.chomp.split(",")
-      choice = [@dictionary[choice.first], @dictionary[choice.last]]
-      move(*choice)
+      user_choice = gets.chomp.split(",")
+      choice = [@dictionary[user_choice.first], @dictionary[user_choice.last]]
+      moved_message = move(*choice)
+
+      if moved_message == true
+        @move_tracker[@turn].unshift("#{user_choice}")
+      else
+        puts moved_message
+      end
+      system "clear"
       display
     end
     toggle_turn
+
     return "#{@turn} WINS!" if check?(turn)
     "Draw"
   end
@@ -146,4 +158,9 @@ class Board
     possible_moves.include?(king_pos)
   end
 
+end
+
+if __FILE__ == $PROGRAM_NAME
+  b = Board.new; nil
+  b.play
 end
