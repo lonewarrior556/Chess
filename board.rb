@@ -74,12 +74,6 @@ class Board
   def board_dup
     YAML.load(self.to_yaml)
 
-
-
-
-
-
-
   end
 
   def move(start_pos, end_pos)
