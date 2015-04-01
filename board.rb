@@ -65,16 +65,16 @@ class Board
     nil
   end
 
-  def check?
+  def check?(color)
     possible_moves = []
     king_pos = []
 
     @board.each do |row|
       row.each do |cell|
         next if cell.nil?
-        if cell.color == self.turn && cell.rank == :king
+        if cell.color == color && cell.rank == :king
           king_pos = cell.position
-        elsif cell.color != self.turn
+        elsif cell.color != color
           possible_moves.concat(cell.moves)
         end
       end
