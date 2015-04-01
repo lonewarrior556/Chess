@@ -21,12 +21,12 @@ class Board
   def build_board
 
     8.times do |col|
-      @board[1][col] = Pawns.new([1,col],:white, @board, :pawn)
-      @board[6][col] = Pawns.new([6,col],:black, @board, :pawn)
-      @board[0][col] = Sliding_Pieces.new([0,col],:white,@board,ORDER[col])
-      @board[7][col] = Sliding_Pieces.new([7,col],:black,@board,ORDER[col])
+      @board[1][col] = Pawns.new([1,col],:white,          @board, :pawn)
+      @board[6][col] = Pawns.new([6,col],:black,          @board, :pawn)
+      @board[0][col] = Sliding_Pieces.new([0,col],:white, @board,ORDER[col])
+      @board[7][col] = Sliding_Pieces.new([7,col],:black, @board,ORDER[col])
       next if K_UNITS[col].nil?
-      @board[0][col] = Stepping_Pieces.new([0,col],:white,@board,K_UNITS[col])
+      @board[0][col] = Stepping_Pieces.new([0,col],:white, @board,K_UNITS[col])
       @board[7][col] = Stepping_Pieces.new([7,col],:black,@board,K_UNITS[col])
     end
 
@@ -64,6 +64,28 @@ class Board
 
     nil
   end
+
+  def board_dup
+    new_object = Board.new
+    new_board = []
+
+    @board.each do |row|
+      new_row = []
+      row.each do |col|
+        if col.nil?
+          new_row << nil
+        else
+          new_row << col.dup
+          col.board = new_object
+        end
+      end
+      new_board << new_row
+    end
+
+    new_object.board = new_board
+    new_object
+  end
+
 
   def check?(color)
     possible_moves = []
