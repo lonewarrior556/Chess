@@ -1,8 +1,8 @@
-require './piece'
+require './pieces'
 
 class Board
 
-  attr_accessor :board, :dictionary
+  attr_accessor :board, :dictionary, :turn
 
   ORDER= [:rook, nil, :bishop, :queen, nil, :bishop, nil, :rook]
   K_UNITS = [nil, :knight, nil, nil, :king, nil,:knight, nil]
@@ -66,7 +66,26 @@ class Board
   end
 
   def check?
-    possbile_moves = []
+    possible_moves = []
+    king_pos = []
+
+    @board.each do |row|
+      row.each do |cell|
+        next if cell.nil?
+        p "last run"
+        p cell.position
+        if cell.color == self.turn && cell.rank == :king
+          p cell.position
+          p cell.color
+          p cell.rank
+          king_pos = cell.position
+        elsif cell.color != self.turn
+          possible_moves << cell.moves
+        end
+      end
+    end
+
+    possible_moves.include?(king_pos)
   end
 
 
